@@ -11,6 +11,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Installation/FirstStep')
+  },
+  { // 安装步骤二
+    path: '/installStepSecond',
+    name: 'InstallStepSecond',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Installation/SecondStep')
   }
 ]
 

@@ -1,28 +1,29 @@
 <!--
- * @Description: 安装步骤-第二步-服务配置
+ * @Description: 动态表单-输入框组件
  * @Author: John Holl
  * @Github: https://github.com/hzylyh
- * @Date: 2021-03-30 13:43:57
+ * @Date: 2021-03-31 08:49:13
  * @LastEditors: John Holl
 -->
-<!--  -->
+
 <template>
-  <el-row class="second-step">
-    <config-page></config-page>
-  </el-row>
+  <el-input v-model="input"
+            class="dynamic-input">
+
+  </el-input>
 </template>
 
 <script>
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》';
-import ConfigPage from './components/ConfigPage'
+
 export default {
   // import引入的组件需要注入到对象中才能使用
-  components: { ConfigPage },
+  components: {},
   data () {
     // 这里存放数据
     return {
-
+      value: 'ddd'
     }
   },
   // 监听属性 类似于data概念
@@ -52,6 +53,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-.second-step {
+.dynamic-input {
+  width: 100%;
 }
 </style>

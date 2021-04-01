@@ -7,20 +7,54 @@
 -->
 <!--  -->
 <template>
-  <div class=''></div>
+  <el-form>
+    <el-row type="flex">
+      <el-col :span="6"
+              v-for="(item, index) in formStyle"
+              :key="index">
+        <el-form-item label-width="86px"
+                      label="ddd">
+          <component :key="item.id"
+                     :is="item.type">
+          </component>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
 </template>
 
 <script>
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》';
-
+import DtInput from './input'
 export default {
   // import引入的组件需要注入到对象中才能使用
-  components: {},
+  components: { DtInput },
   data () {
     // 这里存放数据
     return {
+      formStyle: [
+        {
+          id: '1',
+          type: 'dt-input'
 
+        },
+        {
+          id: '1',
+          type: 'dt-input'
+
+        },
+        {
+          id: '1',
+          type: 'dt-input'
+
+        },
+        {
+          id: '1',
+          type: 'dt-input'
+
+        }
+      ]
     }
   },
   // 监听属性 类似于data概念
