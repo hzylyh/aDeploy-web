@@ -26,7 +26,9 @@
       </el-table>
     </el-row>
     <el-row class="handle-bar">
-      <el-button type="primary">下一步</el-button>
+      <el-button type="primary"
+                 :disabled="multipleSelection.length === 0"
+                 @click="handleClickNext">下一步</el-button>
     </el-row>
   </el-row>
 </template>
@@ -41,11 +43,19 @@ export default {
   data () {
     // 这里存放数据
     return {
-      tableData: [{
-        imageName: 'api-gateway',
-        imageVersion: 'v1.0',
-        imageID: 'jskdfasdkfasjllklkdkkd=='
-      }]
+      tableData: [
+        {
+          imageName: 'api-gateway',
+          imageVersion: 'v1.0',
+          imageID: 'jskdfasdkfasjllklkdkkd=='
+        },
+        {
+          imageName: 'erake-server',
+          imageVersion: 'v1.0',
+          imageID: 'jskdfasdkfasjllklkdkke=='
+        }
+      ],
+      multipleSelection: []
     }
   },
   // 监听属性 类似于data概念
@@ -69,7 +79,14 @@ export default {
   activated () { }, // 如果页面有keep-alive缓存功能，这个函数会触发
   // 方法集合
   methods: {
-
+    handleClickNext () {
+      sessionStorage.setItem('containerList', JSON.stringify(this.multipleSelection))
+      this.$router.push({ name: 'InstallStepSecond' })
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+      console.log(this.multipleSelection)
+    }
   }
 }
 </script>

@@ -2,9 +2,10 @@
  * @Description:
  * @Author: John Holl
  * @Github: https://github.com/hzylyh
- * @Date: 2021-03-30 11:25:10
+ * @Date: 2021-04-21 15:19:59
  * @LastEditors: John Holl
 -->
+
 <!--  -->
 <template>
   <div class=''></div>
@@ -20,7 +21,7 @@ export default {
   data () {
     // 这里存放数据
     return {
-
+      name: ''
     }
   },
   // 监听属性 类似于data概念

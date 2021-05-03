@@ -20,6 +20,14 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Installation/SecondStep')
   }
+  // { // 安装步骤三
+  //   path: '/installStepThird',
+  //   name: 'InstallStepThird',
+  //   // route level code-splitting
+  //   // this generates a separate chunk (about.[hash].js) for this route
+  //   // which is lazy-loaded when the route is visited.
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/Installation/ThirdStep')
+  // }
 ]
 
 const router = new VueRouter({

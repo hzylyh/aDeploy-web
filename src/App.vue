@@ -14,5 +14,6 @@
 }
 html {
   min-width: 900px;
+  padding: 60px 25%;
 }
 </style>

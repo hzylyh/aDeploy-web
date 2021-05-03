@@ -20,7 +20,7 @@ module.exports = {
         target: 'http://localhost:8089',
         ws: false,
         pathRewrite: {
-          '^/aDeployApi/': '/aDeployApi'
+          '^/aDeployApi/': '/aDeployApi/'
         }
       }
     }
@@ -28,7 +28,7 @@ module.exports = {
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
-    name: 'cq-parking',
+    name: 'a-deploy',
     resolve: {
       alias: {
         '@': resolve('src')
