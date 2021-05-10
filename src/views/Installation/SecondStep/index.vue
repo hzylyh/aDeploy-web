@@ -48,50 +48,101 @@
 <script>
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》';
-// import { createDeployment } from '@/api/k8s'
+import { createDeployment } from '@/api/k8s/deployment'
+import { createService } from '@/api/k8s/service'
+import { getContainerList } from '@/api/k8s/container'
 import ConfigPage from './components/ConfigPage'
 
 const formStyle = {
-  'api-gateway': [
-    {
-      id: '1',
-      type: 'dt-input',
-      label: '部署节点数',
-      colName: 'col1.name'
+  nginx: {
+    fullForm: {
+      deployment: {
+        metadata: {
+          name: 'nginx-deploy-test2'
+        },
+        spec: {
+          selector: {
+            matchLabels: {
+              app: 'nginx'
+            }
+          },
+          replicas: 1,
+          template: {
+            metadata: {
+              labels: {
+                app: 'nginx'
+              }
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'nginx',
+                  image: 'nginx:alpine',
+                  ports: [
+                    {
+                      containerPort: 80
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      service: {
+        name: 'service'
+      }
     },
-    {
-      id: '2',
-      type: 'dt-input',
-      label: 'label2',
-      colName: 'col2'
-    },
-    {
-      id: '3',
-      type: 'dt-input',
-      label: 'label3',
-      colName: 'col3'
-    }
-  ],
-  'erake-server': [
-    {
-      id: '4',
-      type: 'dt-input',
-      label: '部署节点数1',
-      colName: 'col2.name'
-    },
-    {
-      id: '5',
-      type: 'dt-input',
-      label: 'label2',
-      colName: 'col2.age'
-    },
-    {
-      id: '6',
-      type: 'dt-input',
-      label: 'label3',
-      colName: 'col2.sex'
-    }
-  ]
+    dynamicCol: [
+      {
+        id: '1',
+        type: 'dt-input',
+        label: '部署节点数',
+        valueType: 'int',
+        colName: 'deployment.spec.replicas'
+      }
+    ]
+  }
+  // 'api-gateway': [
+  //   {
+  //     id: '1',
+  //     type: 'dt-input',
+  //     label: '部署节点数',
+  //     colName: 'col1.name'
+  //   },
+  //   {
+  //     id: '2',
+  //     type: 'dt-input',
+  //     label: 'label2',
+  //     colName: 'col2'
+  //   },
+  //   {
+  //     id: '3',
+  //     type: 'dt-input',
+  //     label: 'label3',
+  //     colName: 'col3'
+  //   }
+  // ],
+  // 'erake-server': [
+  //   {
+  //     id: '4',
+  //     type: 'dt-input',
+  //     label: '部署节点数1',
+  //     colName: 'col2.name'
+  //   },
+  //   {
+  //     id: '5',
+  //     type: 'dt-input',
+  //     label: 'label2',
+  //     colName: 'col2.age'
+  //   },
+  //   {
+  //     id: '6',
+  //     type: 'dt-input',
+  //     label: 'label3',
+  //     colName: 'col2.sex'
+  //   }
+  // ]
 }
 
 export default {
@@ -101,9 +152,9 @@ export default {
     // 这里存放数据
     return {
       containerList: '',
-      pageObject: [],
+      pageObject: {},
       step: 0,
-      deployForm: {}
+      formData: {}
     }
   },
   // 监听属性 类似于data概念
@@ -118,7 +169,10 @@ export default {
   mounted () {
     this.containerList = JSON.parse(sessionStorage.getItem('containerList'))
     this.pageObject = formStyle[this.containerList[this.step].imageName]
+    console.log(JSON.stringify(this.pageObject))
   },
+
+  // {"deployment":{"metadata":{"name":"nginx-deploy-test2"},"spec":{"selector":{"matchLabels":{"app":"nginx"}},"replicas":1,"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"name":"nginx","image":"nginx:alpine","ports":[{"containerPort":80}]}]}}}},"service":{"name":"service"}}
   beforeCreate () { }, // 生命周期 - 创建之前
   beforeMount () { }, // 生命周期 - 挂载之前
   beforeUpdate () { }, // 生命周期 - 更新之前
@@ -128,6 +182,17 @@ export default {
   activated () { }, // 如果页面有keep-alive缓存功能，这个函数会触发
   // 方法集合
   methods: {
+    initData () {
+
+    },
+    getContainerList () {
+      const reqInfo = {
+
+      }
+      getContainerList(reqInfo).then(response => {
+        console.log(response)
+      })
+    },
     handleClickN () {
       this.step += 1
       const imageName = this.containerList[this.step].imageName
@@ -138,12 +203,19 @@ export default {
     handleClickD () {
       // console.log('ddd')
       // this.$router.push({ name: 'InstallStepThird' })
-      // createDeployment(this.formData).then(response => {
-      //   console.log(response)
-      // })
+
+      // 创建deployment和对应service
+      createDeployment(this.formData.deployment).then(response => {
+        console.log(response)
+        // 之后可通过判断来创建service
+        createService(this.formData.service).then(res => {
+          console.log(res)
+        })
+      })
     },
     getChildData (val) {
       console.log(val)
+      this.formData = val
     }
   }
 }

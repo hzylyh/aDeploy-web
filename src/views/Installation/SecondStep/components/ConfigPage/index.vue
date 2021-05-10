@@ -12,13 +12,13 @@
       <el-form>
         <el-row>
           <el-col :span="12"
-                  v-for="(item, index) in pageObject"
+                  v-for="(item, index) in pageObject.dynamicCol"
                   :key="index">
             <el-form-item label-width="106px"
                           :label="item.label">
               <component :key="item.id"
                          :is="item.type"
-                         @changeV="(v) => handleValue(v, item.colName)">
+                         @changeV="(v) => handleValue(v, item.valueType, item.colName)">
               </component>
             </el-form-item>
           </el-col>
@@ -39,7 +39,7 @@ export default {
   components: { DtInput },
   props: {
     pageObject: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
@@ -62,7 +62,25 @@ export default {
 
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
-  mounted () { },
+  mounted () {
+    // console.log('ddd')
+    // const myVal = {
+    //   person: {
+    //     name: 'hou',
+    //     up: {
+    //       arm: 'ddd',
+    //       body: {
+    //         leg: 'ggg'
+    //       }
+    //     }
+    //   }
+    // }
+    // const path = 'person.up.arm'
+    // console.log(myVal)
+    // const path = ['person', 'name']
+    // this.setMulVal(myVal, path, 'zhe')
+    // console.log(myVal)
+  },
   beforeCreate () { }, // 生命周期 - 创建之前
   beforeMount () { }, // 生命周期 - 挂载之前
   beforeUpdate () { }, // 生命周期 - 更新之前
@@ -74,13 +92,22 @@ export default {
   methods: {
     // 初始化form表单
     initForm () {
-      this.formData = this.copyForm({})
-      for (const item of this.pageObject) {
-        this.formData[item.colName] = ''
-      }
+      this.formData = this.copyForm(this.pageObject.fullForm)
+      // for (const item of this.pageObject) {
+      //   this.formData[item.colName] = ''
+      // }
     },
-    handleValue (v, colName) {
-      this.formData[colName] = v
+    handleValue (v, valueType, colName) {
+      const path = colName.split('.')
+      switch (valueType) {
+        case 'int':
+          v = parseInt(v)
+          break
+        default:
+          v = v.toString()
+      }
+      this.setMulVal(this.formData, path, v)
+      // this.formData[colName] = v
       // console.log(this.formData)
       // console.log(v)
       this.$emit('transformData', this.formData)
@@ -90,6 +117,15 @@ export default {
       var obj = {}
       obj = JSON.parse(JSON.stringify(val))
       return obj
+    },
+    setMulVal (obj, path, value) {
+      if (path.length > 1) {
+        const newObj = obj[path[0]]
+        const newPath = path.slice(1)
+        this.setMulVal(newObj, newPath, value)
+      } else {
+        obj[path] = value
+      }
     }
   }
 }

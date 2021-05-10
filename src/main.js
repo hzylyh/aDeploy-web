@@ -1,3 +1,11 @@
+/*
+ * @Description:
+ * @Author: John Holl
+ * @Github: https://github.com/hzylyh
+ * @Date: 2021-03-30 13:48:08
+ * @LastEditors: John Holl
+ * @LastEditTime: 2021-05-04 17:07:40
+ */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
