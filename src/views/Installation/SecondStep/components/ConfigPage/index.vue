@@ -12,7 +12,7 @@
       <el-form>
         <el-row>
           <el-col :span="12"
-                  v-for="(item, index) in pageObject.dynamicCol"
+                  v-for="(item, index) in pageObject.containerDynamicCol"
                   :key="index">
             <el-form-item label-width="106px"
                           :label="item.label">
@@ -92,7 +92,7 @@ export default {
   methods: {
     // 初始化form表单
     initForm () {
-      this.formData = this.copyForm(this.pageObject.fullForm)
+      this.formData = this.copyForm(this.pageObject.containerDeployInfo)
       // for (const item of this.pageObject) {
       //   this.formData[item.colName] = ''
       // }

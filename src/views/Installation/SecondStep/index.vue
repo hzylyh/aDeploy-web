@@ -90,12 +90,34 @@ const formStyle = {
         }
       },
       service: {
-        name: 'service'
+        metadata: {
+          name: 'nginx-service-test1'
+        },
+        spec: {
+          selector: {
+            app: 'nginx'
+          },
+          type: 'NodePort',
+          ports: [
+            {
+              protocol: 'TCP',
+              port: 80,
+              targetPort: 80,
+              NodePort: 30002
+            }
+          ]
+        }
       }
     },
     dynamicCol: [
       {
         id: '1',
+        type: 'dt-input',
+        label: '名称',
+        colName: 'deployment.metadata.name'
+      },
+      {
+        id: '2',
         type: 'dt-input',
         label: '部署节点数',
         valueType: 'int',
@@ -154,7 +176,9 @@ export default {
       containerList: '',
       pageObject: {},
       step: 0,
-      formData: {}
+      formData: {},
+      containers: [],
+      deployInfo: []
     }
   },
   // 监听属性 类似于data概念
@@ -168,8 +192,9 @@ export default {
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {
     this.containerList = JSON.parse(sessionStorage.getItem('containerList'))
-    this.pageObject = formStyle[this.containerList[this.step].imageName]
-    console.log(JSON.stringify(this.pageObject))
+    // this.pageObject = formStyle[this.containerList[this.step].imageName]
+    console.log(JSON.stringify(formStyle.nginx))
+    this.initData()
   },
 
   // {"deployment":{"metadata":{"name":"nginx-deploy-test2"},"spec":{"selector":{"matchLabels":{"app":"nginx"}},"replicas":1,"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"name":"nginx","image":"nginx:alpine","ports":[{"containerPort":80}]}]}}}},"service":{"name":"service"}}
@@ -183,7 +208,7 @@ export default {
   // 方法集合
   methods: {
     initData () {
-
+      this.getContainerList()
     },
     getContainerList () {
       const reqInfo = {
@@ -191,30 +216,52 @@ export default {
       }
       getContainerList(reqInfo).then(response => {
         console.log(response)
+        this.containers = response.data
+        // this.pageObject = this.containers[this.step]
+        this.pageObject = {
+          containerDynamicCol: JSON.parse(this.containers[this.step].containerDynamicCol),
+          containerDeployInfo: JSON.parse(this.containers[this.step].containerDeployInfo)
+        }
+        // this.pageObject['containerDynamicCol'] = JSON.parse(this.containers[this.step].containerDynamicCol)
+        // this.pageObject['containerDeployInfo'] = JSON.parse(this.containers[this.step].containerDeployInfo)
+        // console.log('dfffffddfadfasdddddd', this.pageObject)
       })
     },
     handleClickN () {
       this.step += 1
-      const imageName = this.containerList[this.step].imageName
-      this.pageObject = formStyle[imageName]
+      // const imageName = this.containerList[this.step].imageName
+      // this.pageObject = formStyle[imageName]
 
-      console.log()
+      this.deployInfo.push(this.formData)
+
+      this.pageObject = {
+        containerDynamicCol: JSON.parse(this.containers[this.step].containerDynamicCol),
+        containerDeployInfo: JSON.parse(this.containers[this.step].containerDeployInfo)
+      }
     },
     handleClickD () {
       // console.log('ddd')
       // this.$router.push({ name: 'InstallStepThird' })
+      console.log(this.pageObject)
+      console.log(this.step)
+      console.log(this.deployInfo)
+      if (this.step === 0) {
+        this.deployInfo.push(this.formData)
+      }
 
-      // 创建deployment和对应service
-      createDeployment(this.formData.deployment).then(response => {
-        console.log(response)
-        // 之后可通过判断来创建service
-        createService(this.formData.service).then(res => {
-          console.log(res)
+      for (let i = 0; i < this.deployInfo.length; i++) {
+        // 创建deployment和对应service
+        createDeployment(this.deployInfo[i].deployment).then(response => {
+          console.log(response)
+          // 之后可通过判断来创建service
+          createService(this.deployInfo[i].service).then(res => {
+            console.log(res)
+          })
         })
-      })
+      }
     },
     getChildData (val) {
-      console.log(val)
+      console.log('getChildData', val)
       this.formData = val
     }
   }
