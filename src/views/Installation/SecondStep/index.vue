@@ -211,8 +211,12 @@ export default {
       this.getContainerList()
     },
     getContainerList () {
+      const imageList = []
+      this.containerList.forEach(element => {
+        imageList.push(element.imageId)
+      })
       const reqInfo = {
-
+        imageList: imageList
       }
       getContainerList(reqInfo).then(response => {
         console.log(response)
@@ -242,9 +246,9 @@ export default {
     handleClickD () {
       // console.log('ddd')
       // this.$router.push({ name: 'InstallStepThird' })
-      console.log(this.pageObject)
-      console.log(this.step)
-      console.log(this.deployInfo)
+      // console.log(this.pageObject)
+      // console.log(this.step)
+      // console.log(this.deployInfo)
       if (this.step === 0) {
         this.deployInfo.push(this.formData)
       }
